@@ -1,0 +1,72 @@
+@startuml
+skinparam classAttributeIconSize 0
+abstract class User {
+  - id: int
+  - name: String
+  - email: String
+  - password: String
+  + getRole(): String
+}
+class Customer {
+  - orders: List<Order>
+  + getOrders(): List<Order>
+}
+class Employee {
+  - department: String
+}
+abstract class Product {
+  - id: int
+  - name: String
+  - price: double
+  - stockQuantity: int
+  + displayInfo(): String
+  + reduceStock(quantity: int): void
+}
+class Book {
+  - author: String
+  - isbn: String
+}
+class Electronics {
+  - warrantyMonths: int
+}
+class Clothing {
+  - size: String
+  - material: String
+}
+class EcommerceSystem {
+  - users: List<User>
+  - products: List<Product>
+  - orders: List<Order>
+  + addCustomer(...): Customer
+  + addBook(...): Product
+  + placeOrder(customer, items): Order
+}
+class Order {
+  - orderId: int
+  - customer: Customer
+  - items: List<OrderLine>
+  - createdAt: LocalDateTime
+  + getTotalAmount(): double
+  + printReceipt(): String
+}
+class OrderLine {
+  - product: Product
+  - quantity: int
+  - unitPrice: double
+  + getLineTotal(): double
+}
+class Main
+User <|-- Customer
+User <|-- Employee
+Product <|-- Book
+Product <|-- Electronics
+Product <|-- Clothing
+EcommerceSystem "1" o-- "0..*" User : manages
+EcommerceSystem "1" o-- "0..*" Product : manages
+EcommerceSystem "1" o-- "0..*" Order : manages
+Customer "1" -- "0..*" Order : places
+Order "1" *-- "1..*" OrderLine : contains
+OrderLine "0..*" --> "1" Product : snapshots
+Main ..> EcommerceSystem : uses
+@enduml
+
